@@ -9,18 +9,24 @@ import TableHead from "@material-ui/core/TableHead";
 import TableCell from "@material-ui/core/TableCell";
 
 function App() {
-  const initialList = [
-    {
-      id: 0,
-      url: "test1.png"
-    },
-    {
-      id: 1,
-      url:"test2.png"
-    }
+  const axios = require('axios');
+
+  const tablo = [
   ];
 
-  const [list, setList] = React.useState(initialList);
+  axios.get('/images').then(
+    resp => {
+      
+      console.log(resp.data);
+      setList([{"id":0,"url":"test.png"}]);
+      
+    });
+
+  
+    
+  console.log(tablo);
+
+  const [list, setList] = React.useState(tablo);
   return (
     <div style={{ display: "block", padding: 30 }}>
       <TableContainer component={Paper}>
