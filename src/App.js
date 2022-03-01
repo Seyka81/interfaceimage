@@ -11,18 +11,8 @@ import TableCell from "@material-ui/core/TableCell";
 
 const axios = require('axios');
 
-// const res = async(url) =>
-//   {
-//     return await axios.get(url).then(res => res.data);
-//   }
-
-
-
-function App() {
-  
-  const [list, setList] = useState([]);
+const getImages= async ()=>{  
   const tabTest = [];
-  const getImages= async ()=>{  
     try{ 
       const result= await axios.get('/images');
       let data = result.data;
@@ -35,45 +25,21 @@ function App() {
             url: data[element]
           });
       });
-      setList(tabTest);
+			console.log(typeof tabTest);
+			return tabTest;
     }catch (err){
       console.log(err);
+			return [];
     }
   }
 
+function App() {
+  
+  const [list, setList] = useState([]);
+  
   useEffect(()=>{
-    getImages();
-
-  },[list]);
-//   function remplirTabl(tabl){
-//     console.log(tabl);
-    
-//     Object.keys(tabl).forEach(element => {
-//       console.log(tabl[element]);
-      
-//         tabTest.push(
-//         {
-//           id: element,
-//           url: tabl[element]
-//         });
-//       });
-      
-//   };
-
-
-// useEffect(() => {setList(tabTest);},[list]);
-
-      
-
-  
-//   let resp = res("/images").then(reponse => {return remplirTabl(reponse)})
-//                            .catch(error => console.log(error));
-
-
-  
-    
-//   console.log(list);
-  
+				getImages().then(resp => setList(resp));
+  },[]);
   
   return (
     <div style={{ display: "block", padding: 30 }}>
