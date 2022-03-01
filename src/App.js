@@ -8,6 +8,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TableHead from "@material-ui/core/TableHead";
 import TableCell from "@material-ui/core/TableCell";
+import {Icon} from "@iconify/react";
 
 const axios = require('axios');
 
@@ -40,6 +41,23 @@ function App() {
   useEffect(()=>{
 				getImages().then(resp => setList(resp));
   },[]);
+
+  // function getNewImg(liste){
+  //   useEffect(()=>{
+  //     getImages().then(resp => setList(resp));
+  //   },[]);
+  // };
+
+  const supImg = (e)  => {
+    console.log(e.currentTarget.id);
+    try{ 
+      const result= axios.delete('/images/'+e.currentTarget.id);
+      getImages().then(resp => setList(resp));
+    }catch (err){
+      console.log(err);
+			return [];
+    }
+  }
   
   return (
     <div style={{ display: "block", padding: 30 }}>
@@ -66,6 +84,11 @@ function App() {
                 </TableCell>
                 <TableCell align="right">
                     {item.url}
+                </TableCell>
+                <TableCell align="right">
+                    <Icon id = {item.id} icon="mdi:trash-can" color="blue"
+                     onClick = {supImg}
+                    />
                 </TableCell>
               </TableRow>
             ))}
