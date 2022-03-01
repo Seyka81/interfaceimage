@@ -8,7 +8,10 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TableHead from "@material-ui/core/TableHead";
 import TableCell from "@material-ui/core/TableCell";
+import Button from "@material-ui/core/Button";
+import Input from "@material-ui/core/Input";
 import {Icon} from "@iconify/react";
+
 
 const axios = require('axios');
 
@@ -41,12 +44,6 @@ function App() {
   useEffect(()=>{
 				getImages().then(resp => setList(resp));
   },[]);
-
-  // function getNewImg(liste){
-  //   useEffect(()=>{
-  //     getImages().then(resp => setList(resp));
-  //   },[]);
-  // };
 
   const supImg = (e)  => {
     console.log(e.currentTarget.id);
@@ -95,6 +92,12 @@ function App() {
           </TableBody>
         </Table>
       </TableContainer>
+      <label htmlFor="contained-button-file"> 
+        <Input accept="image/*" id="contained-button-file" type="file"/>
+          <Button variant="contained" >
+              Send
+          </Button>
+      </label>
     </div>
   );
 }
