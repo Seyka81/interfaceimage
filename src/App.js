@@ -8,25 +8,57 @@ import Paper from "@material-ui/core/Paper";
 import TableHead from "@material-ui/core/TableHead";
 import TableCell from "@material-ui/core/TableCell";
 
+const axios = require('axios');
+
+const res = async(url) =>
+  {
+    return await axios.get(url).then(res => res.data);
+  }
+
 function App() {
-  const axios = require('axios');
+  
+  var nouvList = [];
+  const [list, setList] = React.useState([]);
 
-  const tablo = [
-  ];
+  function remplirTabl(tabl){
+    console.log(tabl);
+    const tabTest = [];
+    Object.keys(tabl).forEach(element => {
+      console.log(tabl[element]);
+      
+        tabTest.push(
+        {
+          id: element,
+          url: tabl[element]
+        });
+      
+      
+    }); 
+    setList(tabTest);
+  };
+      
 
-  axios.get('/images').then(
+
+  let resp = res("/images").then(reponse => {return remplirTabl(reponse)})
+                           .catch(error => console.log(error));
+
+  //console.log(resp);
+  
+  
+
+  //remplirTabl(resp);
+
+  /*axios.get('/images').then(
     resp => {
+      remplirTabl(resp.data);
       
-      console.log(resp.data);
-      setList([{"id":0,"url":"test.png"}]);
-      
-    });
+    });*/
 
   
     
-  console.log(tablo);
-
-  const [list, setList] = React.useState(tablo);
+  console.log(list);
+  
+  
   return (
     <div style={{ display: "block", padding: 30 }}>
       <TableContainer component={Paper}>
