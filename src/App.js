@@ -37,6 +37,18 @@ const getImages= async ()=>{
     }
   }
 
+  const uploadImage=async (e)=>{  
+    const files = e.target.files;
+    console.log(files[0].name);
+    // const data = new FormData();
+    // data.append('file', files[0]);
+    // try{ 
+    //   axios.post('/imagesUpload/'+ data)
+    // }catch (err){
+    // }
+  }
+
+
 function App() {
   
   const [list, setList] = useState([]);
@@ -92,12 +104,13 @@ function App() {
           </TableBody>
         </Table>
       </TableContainer>
-      <label htmlFor="contained-button-file"> 
-        <Input accept="image/*" id="contained-button-file" type="file"/>
-          <Button variant="contained" >
-              Send
-          </Button>
-      </label>
+      <input
+        type="file"
+        name="file"
+        onChange={uploadImage}
+        accept="image/*"
+        
+      />
     </div>
   );
 }
