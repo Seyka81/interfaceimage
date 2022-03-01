@@ -1,5 +1,6 @@
 import './App.css';
 import React from "react";
+import {useEffect,useState} from "react";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -10,53 +11,68 @@ import TableCell from "@material-ui/core/TableCell";
 
 const axios = require('axios');
 
-const res = async(url) =>
-  {
-    return await axios.get(url).then(res => res.data);
-  }
+// const res = async(url) =>
+//   {
+//     return await axios.get(url).then(res => res.data);
+//   }
+
+
 
 function App() {
   
-  var nouvList = [];
-  const [list, setList] = React.useState([]);
+  const [list, setList] = useState([]);
+  const tabTest = [];
+  const getImages= async ()=>{  
+    try{ 
+      const result= await axios.get('/images');
+      let data = result.data;
+      Object.keys(data).forEach(element => {
+        console.log(data[element]);
+        
+          tabTest.push(
+          {
+            id: element,
+            url: data[element]
+          });
+      });
+      setList(tabTest);
+    }catch (err){
+      console.log(err);
+    }
+  }
 
-  function remplirTabl(tabl){
-    console.log(tabl);
-    const tabTest = [];
-    Object.keys(tabl).forEach(element => {
-      console.log(tabl[element]);
+  useEffect(()=>{
+    getImages();
+
+  },[list]);
+//   function remplirTabl(tabl){
+//     console.log(tabl);
+    
+//     Object.keys(tabl).forEach(element => {
+//       console.log(tabl[element]);
       
-        tabTest.push(
-        {
-          id: element,
-          url: tabl[element]
-        });
+//         tabTest.push(
+//         {
+//           id: element,
+//           url: tabl[element]
+//         });
+//       });
       
-      
-    }); 
-    setList(tabTest);
-  };
-      
+//   };
 
 
-  let resp = res("/images").then(reponse => {return remplirTabl(reponse)})
-                           .catch(error => console.log(error));
+// useEffect(() => {setList(tabTest);},[list]);
 
-  //console.log(resp);
+      
+
   
-  
+//   let resp = res("/images").then(reponse => {return remplirTabl(reponse)})
+//                            .catch(error => console.log(error));
 
-  //remplirTabl(resp);
-
-  /*axios.get('/images').then(
-    resp => {
-      remplirTabl(resp.data);
-      
-    });*/
 
   
     
-  console.log(list);
+//   console.log(list);
   
   
   return (
