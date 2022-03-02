@@ -20,8 +20,8 @@ const getImages= async ()=>{
     try{ 
       const result= await axios.get('/images');
       let data = result.data;
+      console.log("data:",data);
       Object.keys(data).forEach(element => {
-        console.log(data[element]);
         
           tabTest.push(
           {
@@ -29,7 +29,7 @@ const getImages= async ()=>{
             url: data[element]
           });
       });
-			console.log(typeof tabTest);
+			console.log("nouvTabl:",tabTest);
 			return tabTest;
     }catch (err){
       console.log(err);
@@ -37,16 +37,7 @@ const getImages= async ()=>{
     }
   }
 
-  const uploadImage=async (e)=>{  
-    const files = e.target.files;
-    console.log(files[0].name);
-    // const data = new FormData();
-    // data.append('file', files[0]);
-    // try{ 
-    //   axios.post('/imagesUpload/'+ data)
-    // }catch (err){
-    // }
-  }
+
 
 
 function App() {
@@ -58,7 +49,6 @@ function App() {
   },[]);
 
   const supImg = (e)  => {
-    console.log(e.currentTarget.id);
     try{ 
       const result= axios.delete('/images/'+e.currentTarget.id);
       getImages().then(resp => setList(resp));
@@ -66,6 +56,21 @@ function App() {
       console.log(err);
 			return [];
     }
+  }
+
+  const uploadImage= (e)=>{ 
+    const data = new FormData(); 
+    const files = e.target.files;
+    data.append('file', files[0]);
+    data.append('filename', files[0].name)
+    try{ 
+      const result= axios.post('/imagesUpload/'+files[0].name,data);
+      getImages().then(resp => setList(resp));
+    }catch (err){
+      console.log(err);
+			return [];
+    }
+    
   }
   
   return (
