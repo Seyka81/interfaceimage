@@ -1,6 +1,6 @@
 import './App.css';
 import React from "react";
-import {useEffect,useState} from "react";
+import { useEffect, useState } from "react";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -8,154 +8,183 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TableHead from "@material-ui/core/TableHead";
 import TableCell from "@material-ui/core/TableCell";
-import {Icon} from "@iconify/react";
+import { Icon } from "@iconify/react";
 import ImageViewer from "react-simple-image-viewer";
 
 const axios = require('axios');
 
-const initImages= async ()=>{  
+const initImages = async (clientEncours) => {
   const tabTest = [];
-    try{ 
-      const result= await axios.get('/images');
+  if (clientEncours!="Clients"){
+    try {
+      const result = await axios.get('/images');
       let data = result.data;
-      console.log("data:",data);
+      console.log("data:", data);
       Object.keys(data).forEach(element => {
-        
-          tabTest.push(
+  
+        tabTest.push(
           {
             id: element,
             url: data[element]
           });
       });
-			console.log("nouvTabl:",tabTest);
-			return tabTest;
-    }catch (err){
+      console.log("nouvTabl:", tabTest);
+      return tabTest;
+    } catch (err) {
       console.log(err);
-			return [];
+      return [];
     }
+  }else{
+    return tabTest
   }
-  const getImages= async (data)=>{  
-    const tabTest = [];
-      try{ 
-        console.log("data:",data);
-        Object.keys(data).forEach(element => {
-          
-            tabTest.push(
-            {
-              id: element,
-              url: data[element]
-            });
-        });
-        console.log("nouvTabl:",tabTest);
-        return tabTest;
-      }catch (err){
-        console.log(err);
-        return [];
-      }
-  }
-function App() {
   
+}
+const getImages = async (data) => {
+  const tabTest = [];
+  try {
+    console.log("data:", data);
+    Object.keys(data).forEach(element => {
+
+      tabTest.push(
+        {
+          id: element,
+          url: data[element]
+        });
+    });
+    console.log("nouvTabl:", tabTest);
+    return tabTest;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+function App() {
+
   const [list, setList] = useState([]);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [images, setImages] = useState([]);
-  
-  
-  
-  useEffect(()=>{
-    initImages().then(resp => setList(resp));
-  },[]);
+  const pseudo = ["Toto", "Tata", "Titi", "Tutu", "Tete"];
+  const [clientEncours, setClient] = useState("Clients");
 
-  const supImg = (e)  => {
-    try{ 
-      const result= axios.delete('/images/'+e.currentTarget.id);
-      result.then(resp => 
-        getImages(resp.data).then(resp1=> setList(resp1))
+  useEffect(() => {
+    initImages(clientEncours).then(resp => 
+      setList(resp)
+      );
+  }, []);
+
+  const supImg = (e) => {
+    try {
+      const result = axios.delete('/images/' + e.currentTarget.id);
+      result.then(resp =>
+        getImages(resp.data).then(resp1 => setList(resp1))
 
       );
-    }catch (err){
+    } catch (err) {
       console.log(err);
-			return [];
+      return [];
     }
   }
-  const uploadImage= (e)=>{ 
-    const data = new FormData(); 
+  const uploadImage = (e) => {
+    const data = new FormData();
     const files = e.target.files;
     data.append('file', files[0]);
     data.append('filename', files[0].name)
-    try{ 
-      const result= axios.post('/imagesUpload/'+files[0].name,data);
-      result.then(resp => 
-        getImages(resp.data).then(resp1=> setList(resp1))
+    try {
+      const result = axios.post('/imagesUpload/' + files[0].name, data);
+      result.then(resp =>
+        getImages(resp.data).then(resp1 => setList(resp1))
 
       );
 
-    }catch (err){
+    } catch (err) {
       console.log(err);
-			return [];
+      return [];
     }
   }
 
 
 
-  const openImageViewer = (e)  => {
-    const targetindex=e.currentTarget.id;
-    try{ 
-      const result= axios.get('/imagesAfficher/'+targetindex);
-      const imagesv2=["http://localhost:5000/imagesAfficher/"+targetindex]
+  const openImageViewer = (e) => {
+    const targetindex = e.currentTarget.id;
+    try {
+      const result = axios.get('/imagesAfficher/' + targetindex);
+      const imagesv2 = ["http://localhost:5000/imagesAfficher/" + targetindex]
       setImages(imagesv2);
       setIsViewerOpen(true);
-    }catch (err){
+    } catch (err) {
       console.log(err);
-			return [];
+      return [];
     }
   }
-  const closeImageViewer=()=>{
+  const closeImageViewer = () => {
     setIsViewerOpen(false);
   }
   return (
-    
-    <div style={{ display: "block", padding: 30 }}>
-      <TableContainer component={Paper}>
-        <Table
-          style={{
-            width: 600,
-          }}
-          size="small"
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell>Index</TableCell>
-              <TableCell align="right">
+
+
+    <body style={{ backgroundColor: "#f6f6f6", height: "100vh" }}>
+
+      <div style={{ float: "left", backgroundColor: "#4f4f4f", height: "100vh", width: "280px", borderRight: "solid", color: "white" }}>
+        <h1 style={{ textAlign: "center" }}>Clients</h1>
+        {pseudo.map((item) => (
+          <p style={{ fontWeight: "bold", paddingLeft: 10 }}>{item}</p>
+        ))}
+
+      </div>
+      <div style={{ paddingTop: 30, float: "left", paddingLeft: 10 }}>
+        <div style={{ width: "auto" }}>
+          <img src="http://www.eanqa.fr/wp-content/uploads/2022/02/logo-degrade-eanqa-horizontal.png" width="200" height="60" ></img>
+          <p style={{ textAlign: "center", fontWeight: "bold", fontSize: 30 }}>{clientEncours}</p>
+        </div>
+
+        <TableContainer component={Paper}>
+
+          <Table
+            style={{
+              width: 600,
+            }}
+            size="small"
+          >
+            <TableHead >
+
+              <TableRow>
+                <TableCell >Index</TableCell>
+                <TableCell align="right">
                   Url Image
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {list.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell component="th" scope="row">
-                  {item.id}
-                </TableCell>
-                <TableCell id = {item.id} align="right" onClick={openImageViewer}>
-                    {item.url}
                 </TableCell>
                 <TableCell align="right">
-                    <Icon id = {item.id} icon="mdi:trash-can" color="blue"
-                     onClick = {supImg}
-                    />
+                  Delete
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <input
-        type="file"
-        name="file"
-        onChange={uploadImage}
-        accept="image/*"
-        
-      />
+            </TableHead>
+            <TableBody>
+              {list.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell component="th" scope="row">
+                    {item.id}
+                  </TableCell>
+                  <TableCell id={item.id} align="right" onClick={openImageViewer}>
+                    {item.url}
+                  </TableCell>
+                  <TableCell align="right">
+                    <Icon id={item.id} icon="mdi:trash-can" color="blue"
+                      onClick={supImg}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <input style={{ padding: 10 }}
+          type="file"
+          name="file"
+          onChange={uploadImage}
+          accept="image/*"
+        />
+      </div>
+
+
       {isViewerOpen && (
         <ImageViewer
           src={images}
@@ -167,7 +196,8 @@ function App() {
           closeOnClickOutside={true}
         />
       )}
-    </div>
+
+    </body>
   );
 }
 
