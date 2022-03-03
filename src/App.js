@@ -15,7 +15,7 @@ import {Icon} from "@iconify/react";
 
 const axios = require('axios');
 
-const getImages= async ()=>{  
+const initImages= async ()=>{  
   const tabTest = [];
     try{ 
       const result= await axios.get('/images');
@@ -36,22 +36,40 @@ const getImages= async ()=>{
 			return [];
     }
   }
-
-
-
-
+  const getImages= async (data)=>{  
+    const tabTest = [];
+      try{ 
+        console.log("data:",data);
+        Object.keys(data).forEach(element => {
+          
+            tabTest.push(
+            {
+              id: element,
+              url: data[element]
+            });
+        });
+        console.log("nouvTabl:",tabTest);
+        return tabTest;
+      }catch (err){
+        console.log(err);
+        return [];
+      }
+    }
 function App() {
   
   const [list, setList] = useState([]);
   
   useEffect(()=>{
-				getImages().then(resp => setList(resp));
+    initImages().then(resp => setList(resp));
   },[]);
 
   const supImg = (e)  => {
     try{ 
       const result= axios.delete('/images/'+e.currentTarget.id);
-      getImages().then(resp => setList(resp));
+      result.then(resp => 
+        getImages(resp.data).then(resp1=> setList(resp1))
+
+      );
     }catch (err){
       console.log(err);
 			return [];
@@ -65,7 +83,11 @@ function App() {
     data.append('filename', files[0].name)
     try{ 
       const result= axios.post('/imagesUpload/'+files[0].name,data);
-      getImages().then(resp => setList(resp));
+      result.then(resp => 
+        getImages(resp.data).then(resp1=> setList(resp1))
+
+      );
+
     }catch (err){
       console.log(err);
 			return [];
