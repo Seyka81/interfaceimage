@@ -8,10 +8,8 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import TableHead from "@material-ui/core/TableHead";
 import TableCell from "@material-ui/core/TableCell";
-import Button from "@material-ui/core/Button";
-import Input from "@material-ui/core/Input";
 import {Icon} from "@iconify/react";
-
+import ImageViewer from "react-simple-image-viewer";
 
 const axios = require('axios');
 
@@ -54,10 +52,14 @@ const initImages= async ()=>{
         console.log(err);
         return [];
       }
-    }
+  }
 function App() {
   
   const [list, setList] = useState([]);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const [images, setImages] = useState([]);
+  
+  
   
   useEffect(()=>{
     initImages().then(resp => setList(resp));
@@ -75,7 +77,6 @@ function App() {
 			return [];
     }
   }
-
   const uploadImage= (e)=>{ 
     const data = new FormData(); 
     const files = e.target.files;
@@ -92,10 +93,27 @@ function App() {
       console.log(err);
 			return [];
     }
-    
   }
-  
+
+
+
+  const openImageViewer = (e)  => {
+    const targetindex=e.currentTarget.id;
+    try{ 
+      const result= axios.get('/imagesAfficher/'+targetindex);
+      const imagesv2=["http://localhost:5000/imagesAfficher/"+targetindex]
+      setImages(imagesv2);
+      setIsViewerOpen(true);
+    }catch (err){
+      console.log(err);
+			return [];
+    }
+  }
+  const closeImageViewer=()=>{
+    setIsViewerOpen(false);
+  }
   return (
+    
     <div style={{ display: "block", padding: 30 }}>
       <TableContainer component={Paper}>
         <Table
@@ -118,7 +136,7 @@ function App() {
                 <TableCell component="th" scope="row">
                   {item.id}
                 </TableCell>
-                <TableCell align="right">
+                <TableCell id = {item.id} align="right" onClick={openImageViewer}>
                     {item.url}
                 </TableCell>
                 <TableCell align="right">
@@ -138,6 +156,17 @@ function App() {
         accept="image/*"
         
       />
+      {isViewerOpen && (
+        <ImageViewer
+          src={images}
+          onClose={closeImageViewer}
+          disableScroll={false}
+          backgroundStyle={{
+            backgroundColor: "rgba(0,0,0,0.9)"
+          }}
+          closeOnClickOutside={true}
+        />
+      )}
     </div>
   );
 }
