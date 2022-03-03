@@ -16,9 +16,10 @@ const axios = require('axios');
 
 const initImages = async (clientEncours) => {
   const tabTest = [];
-  if (clientEncours!="Clients"){
+  
+    console.log(clientEncours);
     try {
-      const result = await axios.get('/images');
+      const result = await axios.get('/images/'+clientEncours);
       let data = result.data;
       console.log("data:", data);
       Object.keys(data).forEach(element => {
@@ -35,9 +36,7 @@ const initImages = async (clientEncours) => {
       console.log(err);
       return [];
     }
-  }else{
-    return []
-  }
+
   
 }
 const getImages = async (data) => {
@@ -64,14 +63,16 @@ function App() {
   const [list, setList] = useState([]);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [images, setImages] = useState([]);
-  const pseudo = ["Toto", "Tata", "Titi", "Tutu", "Tete"];
+  const pseudo = [{pseudoNom:"Toto",present:true },{pseudoNom:"Tata",present:true },{pseudoNom:"Tutu",present:false },{pseudoNom:"Titi",present:true },{pseudoNom:"Tete",present:true }];
+
+  
   const [clientEncours, setClient] = useState("Clients");
 
-  useEffect(() => {
-    initImages(clientEncours).then(resp => 
-      setList(resp)
-      );
-  }, []);
+  // useEffect(() => {
+  //   initImages(clientEncours).then(resp => 
+  //     setList(resp)
+  //     );
+  // }, []);
 
 
   const supImg = (e) => {
@@ -121,17 +122,32 @@ function App() {
   const closeImageViewer = () => {
     setIsViewerOpen(false);
   }
-
+  const clientTraitement=(e)=>{
+    console.log(typeof e.currentTarget.id);
+    setClient(e.currentTarget.id);
+    const clientAtraiter=e.currentTarget.id;
+    initImages(clientAtraiter).then(resp => 
+      setList(resp)
+      );
+  }
   return (
 
 
     <div style={{ backgroundColor: "#f6f6f6", height: "100vh" }}>
 
-      <div style={{ float: "left", backgroundColor: "#4f4f4f", height: "100vh", width: "280px", borderRight: "solid", color: "white" }}>
-        <h1 style={{ textAlign: "center" }}>Clients</h1>
-        {pseudo.map((item) => (
-          <p key={item} style={{ fontWeight: "bold", paddingLeft: 10 }}>{item}</p>
-        ))}
+      <div style={{ float: "left", backgroundColor: "#4f4f4f", height: "100vh", width: "280px", borderRight: "solid"}}>
+        <h1 style={{ textAlign: "center" , color: "white" }}>Clients</h1>
+
+        {pseudo.map((item) => item.present ? (
+          
+          <p id={item.pseudoNom} key={item.pseudoNom} onClick= {clientTraitement} style={{ color:"white" ,fontWeight: "bold", paddingLeft: 10 }}>{item.pseudoNom}</p>
+        
+        ):<p id={item.pseudoNom} key={item.pseudoNom} onClick= {clientTraitement} style={{ color:"red" ,fontWeight: "bold", paddingLeft: 10 }}>{item.pseudoNom}</p>
+        
+        
+        
+        
+        )}
 
       </div>
       <div style={{ paddingTop: 30, float: "left", paddingLeft: 10 }}>
