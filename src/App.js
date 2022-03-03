@@ -14,30 +14,54 @@ import ImageViewer from "react-simple-image-viewer";
 
 const axios = require('axios');
 
-const initImages = async (clientEncours) => {
+const refaireImages = async (clientEncours) => {
   const tabTest = [];
-  
-    console.log(clientEncours);
-    try {
-      const result = await axios.get('/images/'+clientEncours);
-      let data = result.data;
-      console.log("data:", data);
-      Object.keys(data).forEach(element => {
-  
-        tabTest.push(
-          {
-            id: element,
-            url: data[element]
-          });
-      });
-      console.log("nouvTabl:", tabTest);
-      return tabTest;
-    } catch (err) {
-      console.log(err);
-      return [];
-    }
 
-  
+  console.log(clientEncours);
+  try {
+    const result = await axios.get('/images/' + clientEncours);
+    let data = result.data;
+    console.log("data:", data);
+    Object.keys(data).forEach(element => {
+
+      tabTest.push(
+        {
+          id: element,
+          url: data[element]
+        });
+    });
+    console.log("nouvTabl:", tabTest);
+    return tabTest;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+
+
+}
+const initImages = async () => {
+  const tabTest = [];
+
+  try {
+    const result = await axios.get('/images');
+    let data = result.data;
+    console.log("data:", data);
+    Object.keys(data).forEach(element => {
+
+      tabTest.push(
+        {
+          id: element,
+          url: data[element]
+        });
+    });
+    console.log("nouvTabl:", tabTest);
+    return tabTest;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+
+
 }
 const getImages = async (data) => {
   const tabTest = [];
@@ -63,21 +87,28 @@ function App() {
   const [list, setList] = useState([]);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [images, setImages] = useState([]);
-  const pseudo = [{pseudoNom:"Toto",present:true },{pseudoNom:"Tata",present:true },{pseudoNom:"Tutu",present:false },{pseudoNom:"Titi",present:true },{pseudoNom:"Tete",present:true }];
+  const pseudo = [{ pseudoNom: "Toto", present: true }, { pseudoNom: "Tata", present: true }, { pseudoNom: "Tutu", present: false }, { pseudoNom: "Titi", present: true }, { pseudoNom: "Tete", present: true }];
 
-  
+
   const [clientEncours, setClient] = useState("Clients");
+  var clientAtraiter = "";
+  useEffect(() => {
+    initImages().then(resp =>
+      setList(resp)
+    );
+  }, []);
 
-  // useEffect(() => {
-  //   initImages(clientEncours).then(resp => 
-  //     setList(resp)
-  //     );
-  // }, []);
+  const retourMenu = () => {
+    setClient("Clients");
+    initImages().then(resp =>
+      setList(resp)
+    );
 
-
+  }
   const supImg = (e) => {
+
     try {
-      const result = axios.delete('/images/' + e.currentTarget.id);
+      const result = axios.delete('/images/' + clientEncours + '/' + e.currentTarget.id);
       result.then(resp =>
         getImages(resp.data).then(resp1 => setList(resp1))
 
@@ -93,7 +124,7 @@ function App() {
     data.append('file', files[0]);
     data.append('filename', files[0].name)
     try {
-      const result = axios.post('/imagesUpload/' + files[0].name, data);
+      const result = axios.post('/imagesUpload/' + clientEncours + '/' + files[0].name, data);
       result.then(resp =>
         getImages(resp.data).then(resp1 => setList(resp1))
 
@@ -110,8 +141,8 @@ function App() {
   const openImageViewer = (e) => {
     const targetindex = e.currentTarget.id;
     try {
-      const result = axios.get('/imagesAfficher/' + targetindex);
-      const imagesv2 = ["http://localhost:5000/imagesAfficher/" + targetindex]
+
+      const imagesv2 = ["http://localhost:5000/imagesAfficher/" + clientEncours + '/' + targetindex]
       setImages(imagesv2);
       setIsViewerOpen(true);
     } catch (err) {
@@ -122,37 +153,33 @@ function App() {
   const closeImageViewer = () => {
     setIsViewerOpen(false);
   }
-  const clientTraitement=(e)=>{
+  const clientTraitement = (e) => {
     console.log(typeof e.currentTarget.id);
     setClient(e.currentTarget.id);
-    const clientAtraiter=e.currentTarget.id;
-    initImages(clientAtraiter).then(resp => 
+    clientAtraiter = e.currentTarget.id;
+    refaireImages(clientAtraiter).then(resp =>
       setList(resp)
-      );
+    );
   }
   return (
 
 
     <div style={{ backgroundColor: "#f6f6f6", height: "100vh" }}>
 
-      <div style={{ float: "left", backgroundColor: "#4f4f4f", height: "100vh", width: "280px", borderRight: "solid"}}>
-        <h1 style={{ textAlign: "center" , color: "white" }}>Clients</h1>
+      <div style={{ float: "left", backgroundColor: "#4f4f4f", height: "100vh", width: "280px", borderRight: "solid" }}>
+        <h1 style={{ textAlign: "center", color: "white" }} onClick={retourMenu}>Clients ({pseudo.length})</h1>
 
         {pseudo.map((item) => item.present ? (
-          
-          <p id={item.pseudoNom} key={item.pseudoNom} onClick= {clientTraitement} style={{ color:"white" ,fontWeight: "bold", paddingLeft: 10 }}>{item.pseudoNom}</p>
-        
-        ):<p id={item.pseudoNom} key={item.pseudoNom} onClick= {clientTraitement} style={{ color:"red" ,fontWeight: "bold", paddingLeft: 10 }}>{item.pseudoNom}</p>
-        
-        
-        
-        
+
+          <p id={item.pseudoNom} key={item.pseudoNom} onClick={clientTraitement} style={{ color: "white", fontWeight: "bold", paddingLeft: 10 }}>{item.pseudoNom}</p>
+
+        ) : <p id={item.pseudoNom} key={item.pseudoNom} onClick={clientTraitement} style={{ color: "red", fontWeight: "bold", paddingLeft: 10 }}>{item.pseudoNom}</p>
         )}
 
       </div>
       <div style={{ paddingTop: 30, float: "left", paddingLeft: 10 }}>
         <div style={{ width: "auto" }}>
-          <img src="http://www.eanqa.fr/wp-content/uploads/2022/02/logo-degrade-eanqa-horizontal.png" width="200" height="60" ></img>
+          <img src="http://www.eanqa.fr/wp-content/uploads/2022/02/logo-degrade-eanqa-horizontal.png" alt="eanqa" width="200" height="60" ></img>
           <p style={{ textAlign: "center", fontWeight: "bold", fontSize: 30 }}>{clientEncours}</p>
         </div>
 
@@ -167,13 +194,17 @@ function App() {
             <TableHead >
 
               <TableRow>
-                <TableCell >Index</TableCell>
-                <TableCell align="right">
+              {clientEncours !=="Clients" ?<TableCell >Index</TableCell>:
+              <TableCell >Nom du Client </TableCell>}
+                {clientEncours !== "Clients" ? <TableCell align="right">
                   Url Image
-                </TableCell>
-                <TableCell align="right">
+                </TableCell> :
+                  <TableCell align="right">
+                    Nombre Images
+                  </TableCell>}
+                {clientEncours !== "Clients" && <TableCell align="right">
                   Delete
-                </TableCell>
+                </TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -182,25 +213,29 @@ function App() {
                   <TableCell component="th" scope="row">
                     {item.id}
                   </TableCell>
-                  <TableCell id={item.id} align="right" onClick={openImageViewer}>
+                  {clientEncours !== "Clients" ? <TableCell id={item.id} align="right" onClick={openImageViewer}>
                     {item.url}
-                  </TableCell>
-                  <TableCell align="right">
-                    <Icon id={item.id} icon="mdi:trash-can" color="blue"
-                      onClick={supImg}
-                    />
-                  </TableCell>
+                  </TableCell> : <TableCell id={item.id} align="right">
+                    {item.url}
+                  </TableCell>}
+                  {clientEncours !== "Clients" &&
+                    <TableCell align="right">
+                      <Icon id={item.id} icon="mdi:trash-can" color="blue"
+                        onClick={supImg}
+                      />
+                    </TableCell>}
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
-        <input style={{ padding: 10 }}
-          type="file"
-          name="file"
-          onChange={uploadImage}
-          accept="image/*"
-        />
+        {clientEncours !== "Clients" &&
+          <input style={{ padding: 10 }}
+            type="file"
+            name="file"
+            onChange={uploadImage}
+            accept="image/*"
+          />}
       </div>
 
 
