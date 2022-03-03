@@ -11,6 +11,7 @@ import TableCell from "@material-ui/core/TableCell";
 import { Icon } from "@iconify/react";
 import ImageViewer from "react-simple-image-viewer";
 
+
 const axios = require('axios');
 
 const initImages = async (clientEncours) => {
@@ -35,7 +36,7 @@ const initImages = async (clientEncours) => {
       return [];
     }
   }else{
-    return tabTest
+    return []
   }
   
 }
@@ -71,6 +72,7 @@ function App() {
       setList(resp)
       );
   }, []);
+
 
   const supImg = (e) => {
     try {
@@ -119,15 +121,16 @@ function App() {
   const closeImageViewer = () => {
     setIsViewerOpen(false);
   }
+
   return (
 
 
-    <body style={{ backgroundColor: "#f6f6f6", height: "100vh" }}>
+    <div style={{ backgroundColor: "#f6f6f6", height: "100vh" }}>
 
       <div style={{ float: "left", backgroundColor: "#4f4f4f", height: "100vh", width: "280px", borderRight: "solid", color: "white" }}>
         <h1 style={{ textAlign: "center" }}>Clients</h1>
         {pseudo.map((item) => (
-          <p style={{ fontWeight: "bold", paddingLeft: 10 }}>{item}</p>
+          <p key={item} style={{ fontWeight: "bold", paddingLeft: 10 }}>{item}</p>
         ))}
 
       </div>
@@ -197,8 +200,9 @@ function App() {
         />
       )}
 
-    </body>
+    </div>
   );
 }
+
 
 export default App;
