@@ -139,11 +139,12 @@ function App() {
 
 
   const openImageViewer = (e) => {
-    const targetindex = e.currentTarget.id;
+    const targetindex = parseInt(e.currentTarget.id);
     try {
-
+      const result = axios.get('/imagesAfficher/' + clientEncours + '/' + targetindex);
       const imagesv2 = ["http://localhost:5000/imagesAfficher/" + clientEncours + '/' + targetindex]
       setImages(imagesv2);
+      console.log(imagesv2);
       setIsViewerOpen(true);
     } catch (err) {
       console.log(err);
