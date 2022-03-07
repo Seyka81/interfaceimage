@@ -22,11 +22,11 @@ const axios = require('axios');
 const refaireImages = async (clientEncours) => {
   const tabTest = [];
 
-  console.log(clientEncours);
+
   try {
     const result = await axios.get('/images/' + clientEncours);
     let data = result.data;
-    console.log("data:", data);
+
     Object.keys(data).forEach(element => {
 
       tabTest.push(
@@ -35,7 +35,7 @@ const refaireImages = async (clientEncours) => {
           url: data[element]
         });
     });
-    console.log("nouvTabl:", tabTest);
+
     return tabTest;
   } catch (err) {
     console.log(err);
@@ -50,7 +50,7 @@ const initImages = async () => {
   try {
     const result = await axios.get('/images');
     let data = result.data;
-    console.log("data:", data);
+
     Object.keys(data).forEach(element => {
 
       tabTest.push(
@@ -59,7 +59,7 @@ const initImages = async () => {
           url: data[element]
         });
     });
-    console.log("nouvTabl:", tabTest);
+
     return tabTest;
   } catch (err) {
     console.log(err);
@@ -71,7 +71,7 @@ const initImages = async () => {
 const getImages = async (data) => {
   const tabTest = [];
   try {
-    console.log("data:", data);
+
     Object.keys(data).forEach(element => {
 
       tabTest.push(
@@ -80,7 +80,6 @@ const getImages = async (data) => {
           url: data[element]
         });
     });
-    console.log("nouvTabl:", tabTest);
     return tabTest;
   } catch (err) {
     console.log(err);
@@ -144,12 +143,10 @@ function App() {
 
 
   const openImageViewer = (e) => {
-    //console.log(e)
     try {
       const result = axios.get('/ImageListApi/' + clientEncours + '/' + e.currentTarget.id);
       const imagesv2 = ["http://localhost:5000/ImageListApi/" + clientEncours + '/' + e.currentTarget.id]
       setImages(imagesv2);
-      console.log(imagesv2);
       setIsViewerOpen(true);
     } catch (err) {
       console.log(err);
@@ -160,7 +157,7 @@ function App() {
     setIsViewerOpen(false);
   }
   const clientTraitement = (e) => {
-    console.log(typeof e.currentTarget.id);
+    console.log(e.currentTarget.id);
     setClient(e.currentTarget.id);
     clientAtraiter = e.currentTarget.id;
     refaireImages(clientAtraiter).then(resp =>
@@ -224,7 +221,7 @@ function App() {
             sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
 
             <Toolbar />
-            <h1 style={{ textAlign: "center", color: "grey" }} onClick={retourMenu}>Clients ({pseudo.length})</h1>
+            <p style={{ textAlign: "center", fontWeight: "bold", fontSize: 30 }}>{clientEncours}</p>
 
 
             <TableContainer component={Paper}>
