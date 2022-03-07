@@ -10,7 +10,12 @@ import TableHead from "@material-ui/core/TableHead";
 import TableCell from "@material-ui/core/TableCell";
 import { Icon } from "@iconify/react";
 import ImageViewer from "react-simple-image-viewer";
-
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import CssBaseline from '@mui/material/CssBaseline';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 
 const axios = require('axios');
 
@@ -139,10 +144,10 @@ function App() {
 
 
   const openImageViewer = (e) => {
-    const targetindex = parseInt(e.currentTarget.id);
+    //console.log(e)
     try {
-      const result = axios.get('/ImageListApi/' + clientEncours + '/' + targetindex);
-      const imagesv2 = ["http://localhost:5000/ImageListApi/" + clientEncours + '/' + targetindex]
+      const result = axios.get('/ImageListApi/' + clientEncours + '/' + e.currentTarget.id);
+      const imagesv2 = ["http://localhost:5000/ImageListApi/" + clientEncours + '/' + e.currentTarget.id]
       setImages(imagesv2);
       console.log(imagesv2);
       setIsViewerOpen(true);
@@ -162,99 +167,145 @@ function App() {
       setList(resp)
     );
   }
+  const drawerWidth = 240;
   return (
-
-
-    <div style={{ backgroundColor: "#f6f6f6", height: "100vh" }}>
-
-      <div style={{ float: "left", backgroundColor: "#4f4f4f", height: "100vh", width: "280px", borderRight: "solid" }}>
-        <h1 style={{ textAlign: "center", color: "white" }} onClick={retourMenu}>Clients ({pseudo.length})</h1>
-
-        {pseudo.map((item) => item.present ? (
-
-          <p id={item.pseudoNom} key={item.pseudoNom} onClick={clientTraitement} style={{ color: "white", fontWeight: "bold", paddingLeft: 10 }}>{item.pseudoNom}</p>
-
-        ) : <p id={item.pseudoNom} key={item.pseudoNom} onClick={clientTraitement} style={{ color: "red", fontWeight: "bold", paddingLeft: 10 }}>{item.pseudoNom}</p>
-        )}
-
-      </div>
-      <div style={{ paddingTop: 30, float: "left", paddingLeft: 10 }}>
-        <div style={{ width: "auto" }}>
-          <img src="http://www.eanqa.fr/wp-content/uploads/2022/02/logo-degrade-eanqa-horizontal.png" alt="eanqa" width="200" height="60" ></img>
-          <p style={{ textAlign: "center", fontWeight: "bold", fontSize: 30 }}>{clientEncours}</p>
-        </div>
-
-        <TableContainer component={Paper}>
-
-          <Table
-            style={{
-              width: 600,
-            }}
-            size="small"
+    <div>
+      <div>
+        <Box sx={{ display: 'flex' }}>
+          <CssBaseline />
+          <AppBar
+            position="fixed"
+            sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
           >
-            <TableHead >
+            <Toolbar>
+              <Typography variant="h6" noWrap component="div" style={{ display: "block", marginLeft: "auto", marginRight: "auto" }}>
+                <img src="http://www.eanqa.fr/wp-content/uploads/2022/02/logo-degrade-eanqa-horizontal.png" alt="eanqa" width="200" height="60" ></img>
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            sx={{
+              width: drawerWidth,
 
-              <TableRow>
-              {clientEncours !=="Clients" ?<TableCell >Index</TableCell>:
-              <TableCell >Nom du Client </TableCell>}
-                {clientEncours !== "Clients" ? <TableCell align="right">
-                  Url Image
-                </TableCell> :
-                  <TableCell align="right">
-                    Nombre Images
-                  </TableCell>}
-                {clientEncours !== "Clients" && <TableCell align="right">
-                  Delete
-                </TableCell>}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {list.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell component="th" scope="row">
-                    {item.id}
-                  </TableCell>
-                  {clientEncours !== "Clients" ? <TableCell id={item.id} align="right" onClick={openImageViewer}>
-                    {item.url}
-                  </TableCell> : <TableCell id={item.id} align="right">
-                    {item.url}
-                  </TableCell>}
-                  {clientEncours !== "Clients" &&
-                    <TableCell align="right">
-                      <Icon id={item.id} icon="mdi:trash-can" color="blue"
-                        onClick={supImg}
-                      />
+              flexShrink: 0,
+              '& .MuiDrawer-paper': {
+                backgroundColor: "#4f4f4f",
+                width: drawerWidth,
+                boxSizing: 'border-box',
+              },
+            }}
+            variant="permanent"
+            anchor="left"
+          >
+            {isViewerOpen && (
+              <ImageViewer
+                src={images}
+                onClose={closeImageViewer}
+                disableScroll={false}
+                backgroundStyle={{
+                  backgroundColor: "rgba(0,0,0,0.9)"
+                }}
+                closeOnClickOutside={true}
+              />
+            )}
+            <h1 style={{ textAlign: "center", color: "white" }} onClick={retourMenu}>Clients ({pseudo.length})</h1>
+
+            {pseudo.map((item) => item.present ? (
+
+              <p id={item.pseudoNom} key={item.pseudoNom} onClick={clientTraitement} style={{ color: "white", fontWeight: "bold", paddingLeft: 10 }}>{item.pseudoNom}</p>
+
+            ) : <p id={item.pseudoNom} key={item.pseudoNom} onClick={clientTraitement} style={{ color: "red", fontWeight: "bold", paddingLeft: 10 }}>{item.pseudoNom}</p>
+            )}
+
+
+          </Drawer>
+          <Box
+            component="main"
+            sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
+
+            <Toolbar />
+            <h1 style={{ textAlign: "center", color: "grey" }} onClick={retourMenu}>Clients ({pseudo.length})</h1>
+
+
+            <TableContainer component={Paper}>
+
+              <Table
+                style={{
+                  width: 600,
+                }}
+                size="small"
+              >
+
+                <TableHead >
+
+                  <TableRow>
+                    {clientEncours !== "Clients" ? <TableCell >Index</TableCell> :
+                      <TableCell >Nom du Client </TableCell>}
+                    {clientEncours !== "Clients" ? <TableCell align="right">
+                      Url Image
+                    </TableCell> :
+                      <TableCell align="right">
+                        Nombre Images
+                      </TableCell>}
+                    {clientEncours !== "Clients" && <TableCell align="right">
+                      Delete
                     </TableCell>}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        {clientEncours !== "Clients" &&
-          <input style={{ padding: 10 }}
-            type="file"
-            name="file"
-            onChange={uploadImage}
-            accept="image/*"
-          />}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {list.map((item) => (
+                    <TableComponent
+                    key={item.id}
+                    id={item.id}
+                    imgUrl={item.url}
+                    clientenCours={clientEncours}
+                    fonction={openImageViewer}
+                    fonction2={supImg}
+                  />
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            {clientEncours !== "Clients" && (
+              <input style={{ padding: 10 }}
+                type="file"
+                name="file"
+                onChange={uploadImage}
+                accept="image/*"
+              />
+            )}
+          </Box>
+
+        </Box>
       </div>
-
-
-      {isViewerOpen && (
-        <ImageViewer
-          src={images}
-          onClose={closeImageViewer}
-          disableScroll={false}
-          backgroundStyle={{
-            backgroundColor: "rgba(0,0,0,0.9)"
-          }}
-          closeOnClickOutside={true}
-        />
-      )}
 
     </div>
   );
 }
+class TableComponent extends React.Component {
+  
+  render() {
+    return (
+        
+          <TableRow key={this.props.id}>
+          <TableCell component="th" scope="row">
+            {this.props.id}
+          </TableCell>
 
+          {this.props.clientenCours !== "Clients" ? <TableCell id={this.props.id} align="right" onClick={this.props.fonction}>
+            {this.props.imgUrl}
+          </TableCell> : <TableCell id={this.props.id} align="right">
+            {this.props.imgUrl}
+          </TableCell>}
+          {this.props.clientenCours !== "Clients" &&
+            <TableCell align="right">
+              <Icon id={this.props.id} icon="mdi:trash-can" color="blue"
+              onClick={this.props.fonction2}
+              />
+            </TableCell>}
+        </TableRow>
+    );
+  }
+}
 
 export default App;
