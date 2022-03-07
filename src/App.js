@@ -108,7 +108,7 @@ function App() {
   const supImg = (e) => {
 
     try {
-      const result = axios.delete('/images/' + clientEncours + '/' + e.currentTarget.id);
+      const result = axios.delete('/ImageListApi/' + clientEncours + '/' + e.currentTarget.id);
       result.then(resp =>
         getImages(resp.data).then(resp1 => setList(resp1))
 
@@ -124,7 +124,7 @@ function App() {
     data.append('file', files[0]);
     data.append('filename', files[0].name)
     try {
-      const result = axios.post('/imagesUpload/' + clientEncours + '/' + files[0].name, data);
+      const result = axios.post('/ImageListApi/' + clientEncours + '/' + files[0].name, data);
       result.then(resp =>
         getImages(resp.data).then(resp1 => setList(resp1))
 
@@ -141,7 +141,7 @@ function App() {
   const openImageViewer = (e) => {
     const targetindex = parseInt(e.currentTarget.id);
     try {
-      const result = axios.get('/imagesAfficher/' + clientEncours + '/' + targetindex);
+      const result = axios.get('/ImageListApi/' + clientEncours + '/' + targetindex);
       const imagesv2 = ["http://localhost:5000/imagesAfficher/" + clientEncours + '/' + targetindex]
       setImages(imagesv2);
       console.log(imagesv2);
