@@ -142,7 +142,7 @@ function App() {
     const targetindex = parseInt(e.currentTarget.id);
     try {
       const result = axios.get('/ImageListApi/' + clientEncours + '/' + targetindex);
-      const imagesv2 = ["http://localhost:5000/imagesAfficher/" + clientEncours + '/' + targetindex]
+      const imagesv2 = ["http://localhost:5000/ImageListApi/" + clientEncours + '/' + targetindex]
       setImages(imagesv2);
       console.log(imagesv2);
       setIsViewerOpen(true);
