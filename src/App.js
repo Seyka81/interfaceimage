@@ -228,7 +228,7 @@ function App() {
 
               <Table
                 style={{
-                  width: 600,
+                  width: `850`,
                 }}
                 size="small"
               >
