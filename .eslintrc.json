@@ -7,7 +7,7 @@
     "extends": [
         "plugin:react/recommended",
         "airbnb",
-        "plugin:jsx-ally/recommended",
+        "plugin:jsx-a11y/recommended",
         "plugin:react-hooks/recommended",
         "prettier"
     ],
@@ -21,10 +21,13 @@
     "plugins": [
         "react",
         "react-hooks",
-        "prettier"
+        "prettier",
+        "jsx-a11y"
     ],
     "rules": {
-        "prettier/prittier": "error",
-        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
+        "prettier/prettier": "error",
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "react/destructuring-assignment": [0, "always", { "ignoreClassFields": true }],
+        "react/prop-types": [0]
     }
 }

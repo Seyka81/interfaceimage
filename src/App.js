@@ -1,6 +1,8 @@
+/* eslint-disable no-console */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import './App.css';
-import React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -23,8 +25,8 @@ const refaireImages = async (clientEncours) => {
   const tabTest = [];
 
   try {
-    const result = await axios.get('/images/' + clientEncours);
-    let data = result.data;
+    const result = await axios.get(`/images/${clientEncours}`);
+    const { data } = result;
 
     Object.keys(data).forEach((element) => {
       tabTest.push({
@@ -44,7 +46,7 @@ const initImages = async () => {
 
   try {
     const result = await axios.get('/images');
-    let data = result.data;
+    const { data } = result;
 
     Object.keys(data).forEach((element) => {
       tabTest.push({
@@ -87,7 +89,7 @@ function App() {
   ];
 
   const [clientEncours, setClient] = useState('Clients');
-  var clientAtraiter = '';
+  let clientAtraiter = '';
   useEffect(() => {
     initImages().then((resp) => setList(resp));
   }, []);
@@ -99,24 +101,23 @@ function App() {
   const supImg = (e) => {
     try {
       const result = axios.delete(
-        '/ImageListApi/' + clientEncours + '/' + e.currentTarget.id
+        `/ImageListApi/${clientEncours}/${e.currentTarget.id}`
       );
       result.then((resp) =>
         getImages(resp.data).then((resp1) => setList(resp1))
       );
     } catch (err) {
       console.log(err);
-      return [];
     }
   };
   const uploadImage = (e) => {
     const data = new FormData();
-    const files = e.target.files;
+    const { files } = e.target;
     data.append('file', files[0]);
     data.append('filename', files[0].name);
     try {
       const result = axios.post(
-        '/ImageListApi/' + clientEncours + '/' + files[0].name,
+        `/ImageListApi/${clientEncours}/${files[0].name}`,
         data
       );
       result.then((resp) =>
@@ -124,26 +125,19 @@ function App() {
       );
     } catch (err) {
       console.log(err);
-      return [];
     }
   };
 
   const openImageViewer = (e) => {
     try {
-      const result = axios.get(
-        '/ImageListApi/' + clientEncours + '/' + e.currentTarget.id
-      );
+      axios.get(`/ImageListApi/${clientEncours}/${e.currentTarget.id}`);
       const imagesv2 = [
-        'http://localhost:5000/ImageListApi/' +
-          clientEncours +
-          '/' +
-          e.currentTarget.id
+        `http://localhost:5000/ImageListApi/${clientEncours}/${e.currentTarget.id}`
       ];
       setImages(imagesv2);
       setIsViewerOpen(true);
     } catch (err) {
       console.log(err);
-      return [];
     }
   };
   const closeImageViewer = () => {
@@ -184,7 +178,7 @@ function App() {
                   alt="eanqa"
                   width="200"
                   height="60"
-                ></img>
+                />
               </Typography>
             </Toolbar>
           </AppBar>
@@ -210,7 +204,7 @@ function App() {
                 backgroundStyle={{
                   backgroundColor: 'rgba(0,0,0,0.9)'
                 }}
-                closeOnClickOutside={true}
+                closeOnClickOutside
               />
             )}
             <h1
@@ -310,7 +304,8 @@ function App() {
     </div>
   );
 }
-class TableComponent extends React.Component {
+
+const TableComponent = class extends React.PureComponent {
   render() {
     return (
       <TableRow key={this.props.id}>
@@ -344,6 +339,6 @@ class TableComponent extends React.Component {
       </TableRow>
     );
   }
-}
+};
 
 export default App;
